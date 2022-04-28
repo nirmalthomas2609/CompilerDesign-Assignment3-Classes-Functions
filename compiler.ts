@@ -397,6 +397,7 @@ function codeConstructor(classObj: Class<Type>, env: Env): Array<string> {
 
   var constructorReturnCommands: Array<string> = [
     `(global.get $$heap)`,
+    `(global.get $$heap)`,
     `(global.set $$heap (i32.add (global.get $$heap) (i32.const ${4 * classObj.fields.length})))`
   ];
 
