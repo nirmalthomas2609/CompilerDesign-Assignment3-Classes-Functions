@@ -33,6 +33,7 @@ export function getReturnType(type: string): Type {
         case "any":
             return "any";
         default:
+            console.log("Type - ", type);
             throw new Error(`Invalid type`); //Will never reach this part of the code
     }
 }
@@ -44,7 +45,7 @@ export function tcBody(stmts: Stmt<any>[], env: Env): [Stmt<Type>[], Type] {
     for (var i = 0; i < stmts.length; i++) {
         stmts[i] = tcStmt(stmts[i], env);
         if (stmts[i].t !== "none")
-            groupReturnType = getReturnType(stmts[i].t);
+            groupReturnType = stmts[i].t;
     }
     return [stmts, groupReturnType];
 }
@@ -271,13 +272,35 @@ export function tcMethod(method: FuncDef<any>, env: Env): FuncDef<Type> {
 
     method.t = method.ret;
 
-    var newStatements: Stmt<Type>[] = method.body.statements.map(s => {
-        //Constructor should not have a return statement which explicitly returns a value within it
-        if (method.name === "__init__" && (s.tag === "return" && !checkIfReturnNone(s)))
-            throw new Error(`TYPE ERROR: Constructor of class ${env.envName} is not expected to return a value`);
+    var [newStatements, groupReturnType]: [Stmt<Type>[], Type] = tcBody(method.body.statements, newEnv);
 
-        return tcStmt(s, newEnv);
-    });
+    method.body.t = groupReturnType;
+
+
+    if (method.name === "__init__"){
+        method.body.statements.forEach(s => {
+            //Constructor should not have a return statement which explicitly returns a value within it
+            if (method.name === "__init__" && (s.tag === "return" && !checkIfReturnNone(s)))
+                throw new Error(`TYPE ERROR: Constructor of class ${env.envName} is not expected to return a value`);
+    
+            // return tcStmt(s, newEnv);
+        });
+    }
+
+    if (!isAssignable(method.t, groupReturnType)) {
+        if (method.t === "none") {
+            throw new Error(`TypeError: Method ${method.name} does not have a return type`);
+        }
+        else {
+            if (groupReturnType === "none") {
+                throw new Error(`TypeError: Method ${method.name} should have a return at possible reachable code segments in the function`);
+            }
+            else {
+                throw new Error(`TypeError: Method ${method.name} returns ${method.t}, but got ${method.body.t}`);
+            }
+        }
+    }
+
     method.body.statements = newStatements;
     return method;
 }

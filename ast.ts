@@ -64,7 +64,7 @@ export function checkIfValidVarType(type: string): boolean {
 }
 
 export function isAssignable(toType: Type, fromType: Type): boolean{
-  if (toType == "none") throw new Error("Compiler Error!: Invalid variable assignment"); //This error will never be thrown (LValue will always be either a class field which cannot have none type / variable which can also not have none type)
+  // if (toType == "none") throw new Error("Compiler Error!: Invalid variable assignment"); //This error will never be thrown (LValue will always be either a class field which cannot have none type / variable which can also not have none type)
   switch(fromType){
     case "none":
       if (toType == "int" || toType == "bool") return false;
@@ -78,7 +78,7 @@ export function isAssignable(toType: Type, fromType: Type): boolean{
     case "any":
       throw new Error("Compiler Error!") //Will never be executed
     default: //Object case
-      if (toType == "int" || toType == "bool" || (toType !== "any" && toType.name !== fromType.name)) return false;
+      if (toType == "int" || toType == "bool" || toType == "none" || (toType !== "any" && toType.name !== fromType.name)) return false;
       return true;
   }
 }
