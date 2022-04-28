@@ -403,7 +403,8 @@ function codeConstructor(classObj: Class<Type>, env: Env): Array<string> {
   if (env.classes.get(classObj.name).methods.has("__init__")){
     constructorReturnCommands = [
       ...constructorReturnCommands,
-      `(call $${classObj.name}$__init__)`
+      `(call $${classObj.name}$__init__)`,
+      `(local.set $$scratch)`
     ];
   }
   constructorReturnCommands = [...constructorReturnCommands, `(return)`];

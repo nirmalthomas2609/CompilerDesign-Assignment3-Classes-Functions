@@ -246,6 +246,17 @@ export function updateEnvByMethod(env: Env, method: FuncDef<any>): Env{
     return newEnv;
 }
 
+function checkIfReturnNone(e: Stmt<any>): boolean {
+    if (e.tag !== "return") return false;
+    const value = e.value;
+    if (value === undefined)
+        return true;
+    if (value.tag === "literal"){
+        return value.value.tag === "None";
+    }
+    return false;
+}
+
 export function tcMethod(method: FuncDef<any>, env: Env): FuncDef<Type> {
     const newParams: Parameter<Type>[] = method.args.map(p => {
         return tcParameter(p, env);
@@ -262,8 +273,8 @@ export function tcMethod(method: FuncDef<any>, env: Env): FuncDef<Type> {
 
     var newStatements: Stmt<Type>[] = method.body.statements.map(s => {
         //Constructor should not have a return statement which explicitly returns a value within it
-        if (method.name === "__init__" && ((s.tag === "return" && s.value !== undefined)))
-            throw new Error(`TYPE ERROR:Constructor of class ${env.envName} is not expected to return a value`);
+        if (method.name === "__init__" && (s.tag === "return" && !checkIfReturnNone(s)))
+            throw new Error(`TYPE ERROR: Constructor of class ${env.envName} is not expected to return a value`);
 
         return tcStmt(s, newEnv);
     });
