@@ -289,14 +289,14 @@ export function tcMethod(method: FuncDef<any>, env: Env): FuncDef<Type> {
 
     if (!isAssignable(method.t, groupReturnType)) {
         if (method.t === "none") {
-            throw new Error(`TypeError: Method ${method.name} does not have a return type`);
+            throw new Error(`TYPE ERROR: Method ${method.name} does not have a return type`);
         }
         else {
             if (groupReturnType === "none") {
-                throw new Error(`TypeError: Method ${method.name} should have a return at possible reachable code segments in the function`);
+                throw new Error(`TYPE ERROR: Method ${method.name} should have a return at possible reachable code segments in the function`);
             }
             else {
-                throw new Error(`TypeError: Method ${method.name} returns ${method.t}, but got ${method.body.t}`);
+                throw new Error(`TYPE ERROR: Method ${method.name} returns ${method.t}, but got ${method.body.t}`);
             }
         }
     }
@@ -323,7 +323,7 @@ export function tcParameter(p: Parameter<any>, env: Env): Parameter<Type> {
 }
 
 export function tcFieldAccess(expression: Expr<any>, env: Env): Expr<Type> {
-    if (expression.tag !== "FieldAccess") throw new Error(`TYPE ERROR:Expected Field access statement, got ${expression.tag}`); //Will never be executed
+    if (expression.tag !== "FieldAccess") throw new Error(`TYPE ERROR: Expected Field access statement, got ${expression.tag}`); //Will never be executed
     const methodObj = tcExpression(expression.obj, env);
     const fieldName = expression.name;
     const [isObj, className] = checkIfObjectType(methodObj.t);
