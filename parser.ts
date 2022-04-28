@@ -439,7 +439,7 @@ export function traverseExpr(c: TreeCursor, s: string): Expr<any> {
     case "MemberExpression":
       return parseMemberExpression(c, s);
     default:
-      throw new Error("Could not parse expr at " + c.from + " " + c.to + ": " + s.substring(c.from, c.to) + " with node type " + c.type.name + " / ParseError / " + s);
+      throw new Error(`${s} | Could not parse expr at " + c.from + " " + c.to + ": " + s.substring(c.from, c.to) + " with node type " + c.type.name + " / ParseError`);
   }
 }
 
