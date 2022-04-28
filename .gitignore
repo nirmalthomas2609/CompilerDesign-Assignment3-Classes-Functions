@@ -1,0 +1,8 @@
+node_modules
+build
+cli
+*.sw*
+dist
+.vscode
+.git
+.DS*
