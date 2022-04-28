@@ -462,7 +462,7 @@ export function traverseStmt(c: TreeCursor, s: string): Stmt<any> {
     case "PassStatement":
       return { tag: "pass" }
     default:
-      throw new Error(`${s.substring(25)} | ParseError: Could not parse stmt at ` + c.node.from + " " + c.node.to + ": " + s.substring(c.from, c.to) + " with node type " + c.node.type.name);
+      throw new Error(`${s.substring(75)} | ParseError: Could not parse stmt at ` + c.node.from + " " + c.node.to + ": " + s.substring(c.from, c.to) + " with node type " + c.node.type.name);
   }
 }
 
