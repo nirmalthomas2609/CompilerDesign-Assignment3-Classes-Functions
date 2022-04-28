@@ -412,6 +412,7 @@ function codeConstructor(classObj: Class<Type>, env: Env): Array<string> {
   return [
     `(func $${classObj.name}$$constructor`,
     `(result i32)`,
+    `(local $$scratch i32)`,
     ...fieldInitializationCommands, 
     ...constructorReturnCommands,
     `)`
